@@ -1,0 +1,14 @@
+{
+  "lists": [
+    {
+      "id": 1,
+      "content": "투두리스트 프로젝트 시작",
+      "checked": true
+    },
+    {
+      "id": 2,
+      "content": "투두리스트 CRUD 구현하기",
+      "checked": false
+    }
+  ]
+}

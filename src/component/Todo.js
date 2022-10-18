@@ -1,11 +1,13 @@
-import { useState } from "react";
-// import useFetch from "../hooks/useFetch";
+import { useRef, useState } from "react";
+import useFetch from "../hooks/useFetch";
 
-export default function Todo({lists: w}) {
-    const [lists , setLists] = useState(w)
-    const [checked, setChecked] = useState(lists.checked);
+export default function Todo({lists:w}) {
+    const contentRef = useRef(null);
 
-    // const lists = useFetch("http://localhost:3001/lists")
+    const [isLists , setIsLists] = useState(w)
+    const [checked, setChecked] = useState();
+
+    const lists = useFetch("http://localhost:3001/lists")
     
     function toggleDone() {
         fetch(`http://localhost:3001/${lists.id}`,{
@@ -15,10 +17,9 @@ export default function Todo({lists: w}) {
             },
             body : JSON.stringify({
                 ...lists,
-                checked : !checked
+                checked : !checked,
             }),
-        })
-        .then(res => {
+        }).then(res => {
             if(res.ok){
                 setChecked(!checked)
             }
@@ -28,10 +29,13 @@ export default function Todo({lists: w}) {
     function del() {
         if(window.confirm('삭제 할까요?')) {
             fetch(`http://localhost:3001/lists/${lists.id}`, {
-                method: 'DELETE', 
+                method: "DELETE", 
             }).then(res => {
                 if(res.ok){
-                    setLists({id:0})
+                    setIsLists({
+                        ...lists,
+                        id:0,
+                    })
                 }
             })
         }
@@ -39,6 +43,27 @@ export default function Todo({lists: w}) {
 
     if(lists.id === 0){
         return null;
+    }
+
+  
+
+    function onSubmit(e) {
+        e.preventDefault();
+
+        fetch(`http://localhost:3001/lists/`,{
+            method : 'POST',
+            headers : {
+                "Content-Type" : 'application/json', 
+            },
+            body : JSON.stringify({
+                content : contentRef.current.value,
+                checked : false
+            }),
+        }).then(res => {
+            if(res.ok){
+                alert('생성 되었습니다.')
+            }
+        })
     }
 
     return <>
@@ -58,5 +83,11 @@ export default function Todo({lists: w}) {
             ))}
             </tbody>
         </table>
+        <form onSubmit={onSubmit}>
+            <div className="input_area">
+                <input type="text" placeholder="해야할것!" ref={contentRef}></input>
+                <button>저장</button>
+            </div>
+        </form>
     </>
 }

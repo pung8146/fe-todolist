@@ -29,6 +29,11 @@
       "content": "추가 완료 / 삭제 / 수정 미완",
       "checked": false,
       "id": 6
+    },
+    {
+      "content": "추가 구현",
+      "checked": false,
+      "id": 7
     }
   ]
 }
